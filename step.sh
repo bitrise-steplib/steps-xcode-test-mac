@@ -3,6 +3,7 @@ set -e
 
 PROJECT_PATH=$BITRISE_PROJECT_PATH
 SCHEME=$BITRISE_SCHEME
+CLEAN_BUILD="clean"
 
 if [ ! -z "${project_path}" ] ; then
 	PROJECT_PATH="${project_path}"
@@ -10,6 +11,10 @@ fi
 
 if [ ! -z "${scheme}" ] ; then
 	SCHEME="${scheme}"
+fi
+
+if [ "${is_clean_build}" == "no" ] ; then
+	CLEAN_BUILD=""
 fi
 
 if [ ! -z "${workdir}" ] ; then
