@@ -68,18 +68,6 @@ inputs:
     value_options:
     - "yes"
     - "no"
-- is_full_output: "no"
-  opts:
-    description: |-
-      If this option is set to "no" then only the test results / test summary
-      will be printed. If set to "yes" then every output generated
-      by `xcodebuild` (compile & test) will be presented.
-    is_expand: true
-    is_required: true
-    title: Present the full compile & test output?
-    value_options:
-    - "yes"
-    - "no"
 - opts:
     description: |-
       When available this output will contain the full test results
