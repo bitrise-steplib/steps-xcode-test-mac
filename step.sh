@@ -6,6 +6,8 @@ SCHEME=$BITRISE_SCHEME
 BUILD_COMMAND="clean build"
 GENERATE_CODE_COVERAGE_FILES="no"
 
+export BITRISE_XCODE_TEST_RESULT
+
 if [ ! -z "${project_path}" ] ; then
 	PROJECT_PATH="${project_path}"
 fi
