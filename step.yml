@@ -21,8 +21,6 @@ type_tags:
 dependencies:
 - manager: _
   name: xcode
-- manager: brew
-  name: go
 deps:
   check_only:
   - name: xcode
