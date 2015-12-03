@@ -31,7 +31,7 @@ if [ ! -z "${workdir}" ] ; then
 	fi
 fi
 
-if set -o pipefail && xcodebuild -project "${PROJECT_PATH}" -scheme "${SCHEME}" "${BUILD_COMMAND}" test GENERATE_CODE_COVERAGE_FILES | xcpretty
+if set -o pipefail && xcodebuild -project "${PROJECT_PATH}" -scheme "${SCHEME}" "${BUILD_COMMAND}" test "${GENERATE_CODE_COVERAGE_FILES}" | xcpretty
 then BITRISE_XCODE_TEST_RESULT="succeeded"
 else BITRISE_XCODE_TEST_RESULT="failed"
 fi
