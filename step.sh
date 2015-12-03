@@ -2,9 +2,14 @@
 set -e
 
 PROJECT_PATH=$BITRISE_PROJECT_PATH
+SCHEME=$BITRISE_SCHEME
 
 if [ ! -z "${project_path}" ] ; then
 	PROJECT_PATH="${project_path}"
+fi
+
+if [ ! -z "${scheme}" ] ; then
+	SCHEME="${scheme}"
 fi
 
 if [ ! -z "${workdir}" ] ; then
@@ -16,4 +21,4 @@ if [ ! -z "${workdir}" ] ; then
 	fi
 fi
 
-set -o pipefail && xcodebuild -project "${PROJECT_PATH}" -scheme $BITRISE_SCHEME build test | xcpretty
+set -o pipefail && xcodebuild -project "${PROJECT_PATH}" -scheme "${SCHEME}" "${CLEAN_BUILD}" build test | xcpretty
