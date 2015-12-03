@@ -1,12 +1,11 @@
 #!/bin/bash
-set -e
+set -ex
 
 PROJECT_PATH=$BITRISE_PROJECT_PATH
 SCHEME=$BITRISE_SCHEME
 BUILD_COMMAND="clean build"
 GENERATE_CODE_COVERAGE_FILES="no"
-
-export BITRISE_XCODE_TEST_RESULT
+BITRISE_XCODE_TEST_RESULT
 
 if [ ! -z "${project_path}" ] ; then
 	PROJECT_PATH="${project_path}"
@@ -37,3 +36,5 @@ if set -o pipefail && xcodebuild -project "${PROJECT_PATH}" -scheme "${SCHEME}" 
 then BITRISE_XCODE_TEST_RESULT="succeeded"
 else BITRISE_XCODE_TEST_RESULT="failed"
 fi
+
+envman add --key BITRISE_XCODE_TEST_RESULT --value "${BITRISE_XCODE_TEST_RESULT}"
