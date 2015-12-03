@@ -31,4 +31,4 @@ if [ ! -z "${workdir}" ] ; then
 	fi
 fi
 
-set -o pipefail && xcodebuild -project "${PROJECT_PATH}" -scheme "${SCHEME}" "${CLEAN_BUILD}" build test | xcpretty
+set -o pipefail && xcodebuild -project "${PROJECT_PATH}" -scheme "${SCHEME}" "${CLEAN_BUILD}" build test GENERATE_CODE_COVERAGE_FILES | xcpretty
