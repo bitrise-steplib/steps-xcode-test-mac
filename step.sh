@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+PROJECT_PATH=$BITRISE_PROJECT_PATH
+
+if [ ! -z "${project_path}" ] ; then
+	PROJECT_PATH="${project_path}"
+fi
+
 if [ ! -z "${workdir}" ] ; then
 	echo "==> Switching to working directory: ${workdir}"
 	cd "${workdir}"
@@ -10,4 +16,4 @@ if [ ! -z "${workdir}" ] ; then
 	fi
 fi
 
-set -o pipefail && xcodebuild -project $BITRISE_PROJECT_PATH -scheme $BITRISE_SCHEME build test | xcpretty
+set -o pipefail && xcodebuild -project "${PROJECT_PATH}" -scheme $BITRISE_SCHEME build test | xcpretty
