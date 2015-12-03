@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -e
 
 PROJECT_PATH=$BITRISE_PROJECT_PATH
 SCHEME=$BITRISE_SCHEME
