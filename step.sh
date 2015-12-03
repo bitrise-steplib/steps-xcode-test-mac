@@ -1,21 +1,11 @@
 #!/bin/bash
 set -e
 
-PROJECT_PATH=$BITRISE_PROJECT_PATH
-SCHEME=$BITRISE_SCHEME
-BUILD_COMMAND="clean build"
+BUILD_COMMAND=""
 GENERATE_CODE_COVERAGE_FILES="no"
 
-if [ ! -z "${project_path}" ] ; then
-	PROJECT_PATH="${project_path}"
-fi
-
-if [ ! -z "${scheme}" ] ; then
-	SCHEME="${scheme}"
-fi
-
-if [ "${is_clean_build}" == "no" ] ; then
-	BUILD_COMMAND="build"
+if [ "${is_clean_build}" == "yes" ] ; then
+	BUILD_COMMAND="clean"
 fi
 
 if [ "${generate_code_coverage_files}" == "yes" ] ; then
@@ -31,7 +21,12 @@ if [ ! -z "${workdir}" ] ; then
 	fi
 fi
 
-if set -o pipefail && xcodebuild -project "${PROJECT_PATH}" -scheme "${SCHEME}" "${BUILD_COMMAND}" test "${GENERATE_CODE_COVERAGE_FILES}" | xcpretty
+set -x
+set -o pipefail && xcodebuild -project "${project_path}" -scheme "${scheme}" ${BUILD_COMMAND} build test "${GENERATE_CODE_COVERAGE_FILES}" | xcpretty
+ret=$?
+set +x
+
+if [ $ret -eq 0 ] ;
 then BITRISE_XCODE_TEST_RESULT="succeeded"
 else BITRISE_XCODE_TEST_RESULT="failed"
 fi
