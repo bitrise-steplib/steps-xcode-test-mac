@@ -2,7 +2,7 @@
 set -e
 
 BUILD_COMMAND=""
-GENERATE_CODE_COVERAGE_FILES="no"
+GENERATE_CODE_COVERAGE_FILES=
 
 if [ "${is_clean_build}" == "yes" ] ; then
 	BUILD_COMMAND="clean"
