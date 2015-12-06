@@ -1,0 +1,23 @@
+format_version: 1.0.0
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+
+app:
+  envs:
+  # define these in your .bitrise.secrets.yml
+  - PROJECT_WORKDIR:
+  - BITRISE_PROJECT_PATH:
+  - BITRISE_SCHEME:
+
+workflows:
+  test:
+    steps:
+    - path::./:
+        inputs:
+        - is_clean_build: "no"
+        - generate_code_coverage_files: "no"
+    - script:
+        title: Output test
+        is_always_run: true
+        inputs:
+        - content: |-
+            echo "BITRISE_XCODE_TEST_RESULT: ${BITRISE_XCODE_TEST_RESULT}"
