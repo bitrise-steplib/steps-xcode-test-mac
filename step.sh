@@ -22,7 +22,7 @@ if [ ! -z "${workdir}" ] ; then
 fi
 
 set -x
-set -o pipefail && xcodebuild -project "${project_path}" -scheme "${scheme}" ${BUILD_COMMAND} build test "${GENERATE_CODE_COVERAGE_FILES}" | xcpretty
+set -o pipefail && xcodebuild -project "${project_path}" -scheme "${scheme}" ${BUILD_COMMAND} build test ${GENERATE_CODE_COVERAGE_FILES} | xcpretty
 ret=$?
 set +x
 
