@@ -1,9 +1,7 @@
 title: Xcode Test for Mac
 summary: |-
-  Write the tests and run them on every build just to make sure those tiny
-  code goblins didn't put something in the code that shouldn't be there while
-  you were at the daily Scrum meeting.
-description: Runs Xcode's `test` action.
+  Run Xcode Test on your Mac OS X app project.
+description: Runs Xcode's `test` action, configured for Mac OS X app projects.
 website: https://github.com/vasarhelyia/steps-xcode-test-mac
 source_code_url: https://github.com/vasarhelyia/steps-xcode-test-mac
 support_url: https://github.com/vasarhelyia/steps-xcode-test-mac/issues
