@@ -3,6 +3,7 @@ set -e
 
 BUILD_COMMAND=""
 GENERATE_CODE_COVERAGE_FILES=
+XCPROJECT_OR_WORKSPACE=""
 
 if [ "${is_clean_build}" == "yes" ] ; then
 	BUILD_COMMAND="clean"
@@ -10,6 +11,16 @@ fi
 
 if [ "${generate_code_coverage_files}" == "yes" ] ; then
 	GENERATE_CODE_COVERAGE_FILES="GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES"
+fi
+
+if [[ "${project_path}" == *".xcworkspace"* ]]
+then
+  XCPROJECT_OR_WORKSPACE="-workspace ${project_path}"
+fi
+
+if [[ "${project_path}" == *".xcodeproj"* ]]
+then
+  XCPROJECT_OR_WORKSPACE="-project ${project_path}"
 fi
 
 if [ ! -z "${workdir}" ] ; then
@@ -22,7 +33,7 @@ if [ ! -z "${workdir}" ] ; then
 fi
 
 set -x
-set -o pipefail && xcodebuild -project "${project_path}" -scheme "${scheme}" ${BUILD_COMMAND} build test ${GENERATE_CODE_COVERAGE_FILES} | xcpretty
+set -o pipefail && xcodebuild "${XCPROJECT_OR_WORKSPACE}" -scheme "${scheme}" ${BUILD_COMMAND} build test ${GENERATE_CODE_COVERAGE_FILES} | xcpretty
 ret=$?
 set +x
 
