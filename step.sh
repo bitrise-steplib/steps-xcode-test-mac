@@ -9,6 +9,7 @@ echo "* project_path: $project_path"
 echo "* scheme: $scheme"
 echo "* is_clean_build: $is_clean_build"
 echo "* generate_code_coverage_files: $generate_code_coverage_files"
+echo "* output_tool: $output_tool"
 
 echo
 
@@ -30,16 +31,19 @@ echo "* xcodebuild_version: $xcodebuild_version"
 # Detect xcpretty version
 xcpretty_version=""
 if [[ "${output_tool}" == "xcpretty" ]] ; then
+	set +e
 	xcpretty_version=$(xcpretty --version)
+	set -e
 	exit_code=$?
 	if [[ $exit_code != 0 || -z "$xcpretty_version" ]] ; then
 		echo "xcpretty is not installed
 		For xcpretty installation see: 'https://github.com/supermarin/xcpretty',
 		or use 'xcodebuild' as 'output_tool'.
 		"
+		output_tool="xcodebuild"
+	else
+		echo "* xcpretty_version: $xcpretty_version"
 	fi
-
-	echo "* xcpretty_version: $xcpretty_version"
 fi
 
 echo
@@ -78,7 +82,7 @@ fi
 
 set -x
 
-if [ $xcpretty_version != "" ] ; then
+if [ $output_tool == "xcpretty" ] ; then
 	set -o pipefail && xcodebuild ${XCPROJECT_OR_WORKSPACE} -scheme "${scheme}" ${BUILD_COMMAND} build test ${GENERATE_CODE_COVERAGE_FILES} | xcpretty
 else
 	xcodebuild ${XCPROJECT_OR_WORKSPACE} -scheme "${scheme}" ${BUILD_COMMAND} build test ${GENERATE_CODE_COVERAGE_FILES}
