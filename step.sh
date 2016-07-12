@@ -33,7 +33,6 @@ xcpretty_version=""
 if [[ "${output_tool}" == "xcpretty" ]] ; then
 	set +e
 	xcpretty_version=$(xcpretty --version)
-	set -e
 	exit_code=$?
 	if [[ $exit_code != 0 || -z "$xcpretty_version" ]] ; then
 		echo "xcpretty is not installed
@@ -44,6 +43,7 @@ if [[ "${output_tool}" == "xcpretty" ]] ; then
 	else
 		echo "* xcpretty_version: $xcpretty_version"
 	fi
+	set -e
 fi
 
 echo
