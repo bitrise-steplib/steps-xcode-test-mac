@@ -1,6 +1,54 @@
 #!/bin/bash
 set -e
 
+#
+# Validate parameters
+echo "Configs:"
+echo "* workdir: $workdir"
+echo "* project_path: $project_path"
+echo "* scheme: $scheme"
+echo "* is_clean_build: $is_clean_build"
+echo "* generate_code_coverage_files: $generate_code_coverage_files"
+echo "* output_tool: $output_tool"
+
+echo
+
+# Detect Xcode major version
+xcode_major_version=""
+major_version_regex="Xcode ([0-9]).[0-9]"
+out=$(xcodebuild -version)
+if [[ "${out}" =~ ${major_version_regex} ]] ; then
+	xcode_major_version="${BASH_REMATCH[1]}"
+fi
+
+IFS=$'\n'
+xcodebuild_version_split=($out)
+unset IFS
+
+xcodebuild_version="${xcodebuild_version_split[0]} (${xcodebuild_version_split[1]})"
+echo "* xcodebuild_version: $xcodebuild_version"
+
+# Detect xcpretty version
+xcpretty_version=""
+if [[ "${output_tool}" == "xcpretty" ]] ; then
+	set +e
+	xcpretty_version=$(xcpretty --version)
+	exit_code=$?
+	if [[ $exit_code != 0 || -z "$xcpretty_version" ]] ; then
+		echo "xcpretty is not installed
+		For xcpretty installation see: 'https://github.com/supermarin/xcpretty',
+		or use 'xcodebuild' as 'output_tool'.
+		"
+		output_tool="xcodebuild"
+	else
+		echo "* xcpretty_version: $xcpretty_version"
+	fi
+	set -e
+fi
+
+echo
+
+# Run test
 BUILD_COMMAND=""
 GENERATE_CODE_COVERAGE_FILES=
 XCPROJECT_OR_WORKSPACE=""
@@ -33,7 +81,13 @@ if [ ! -z "${workdir}" ] ; then
 fi
 
 set -x
-set -o pipefail && xcodebuild ${XCPROJECT_OR_WORKSPACE} -scheme "${scheme}" ${BUILD_COMMAND} build test ${GENERATE_CODE_COVERAGE_FILES} | xcpretty
+
+if [ $output_tool == "xcpretty" ] ; then
+	set -o pipefail && xcodebuild ${XCPROJECT_OR_WORKSPACE} -scheme "${scheme}" ${BUILD_COMMAND} build test ${GENERATE_CODE_COVERAGE_FILES} | xcpretty
+else
+	xcodebuild ${XCPROJECT_OR_WORKSPACE} -scheme "${scheme}" ${BUILD_COMMAND} build test ${GENERATE_CODE_COVERAGE_FILES}
+fi
+
 ret=$?
 set +x
 
