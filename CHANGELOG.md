@@ -1,6 +1,11 @@
-## Changelog (Current version: 1.0.5)
+## Changelog (Current version: 1.0.6)
 
 -----------------
+
+### 1.0.6 (2016 Dec 19)
+
+* [42e32a6] prepare for 1.0.6
+* [940b09c] macos tag (#4)
 
 ### 1.0.5 (2016 Jul 12)
 
@@ -35,4 +40,4 @@
 
 -----------------
 
-Updated: 2016 Jul 12
+Updated: 2016 Dec 19
