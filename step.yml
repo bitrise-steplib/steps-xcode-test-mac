@@ -8,7 +8,7 @@ support_url: https://github.com/bitrise-steplib/steps-xcode-test-mac/issues
 host_os_tags:
 - osx-10.10
 project_type_tags:
-- mac
+- macos
 type_tags:
 - build
 - xcode
