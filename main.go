@@ -113,12 +113,9 @@ func exportTestResult(status string) {
 	}
 }
 
-func runTest(output string, err error) {
-	if err != nil {
-		log.Errorf("Test failed, error: %s", err)
-		exportTestResult("failed")
-		os.Exit(1)
-	}
+func failf(format string, v ...interface{}) {
+	log.Errorf(format, v...)
+	os.Exit(1)
 }
 
 //--------------------
@@ -129,8 +126,7 @@ func main() {
 	configs := createConfigsModelFromEnvs()
 	configs.print()
 	if err := configs.validate(); err != nil {
-		log.Errorf("Issue with input: %s", err)
-		os.Exit(1)
+		failf("Issue with input: %s", err)
 	}
 
 	fmt.Println()
@@ -146,9 +142,8 @@ func main() {
 	} else if strings.HasSuffix(configs.ProjectPath, ".xcworkspace") {
 		action = "-workspace"
 	} else {
-		log.Errorf("Invalid project file (%s), extension should be (.xcodeproj/.xcworkspace)", configs.ProjectPath)
 		exportTestResult("failed")
-		os.Exit(1)
+		failf("Invalid project file (%s), extension should be (.xcodeproj/.xcworkspace)", configs.ProjectPath)
 	}
 
 	log.Printf("* action: %s", action)
@@ -156,9 +151,8 @@ func main() {
 	// Output tools versions
 	xcodebuildVersion, err := xcodeutil.GetXcodeVersion()
 	if err != nil {
-		log.Errorf("Failed to get the version of xcodebuild! Error: %s", err)
 		exportTestResult("failed")
-		os.Exit(1)
+		failf("Failed to get the version of xcodebuild! Error: %s", err)
 	}
 
 	log.Printf("* xcodebuild_version: %s (%s)", xcodebuildVersion.Version, xcodebuildVersion.BuildVersion)
@@ -192,9 +186,15 @@ func main() {
 	testCommandModel.SetCustomBuildAction(buildAction...)
 
 	if configs.OutputTool == "xcpretty" {
-		runTest(xcpretty.New(testCommandModel).Run())
+		if _, err := xcpretty.New(testCommandModel).Run(); err != nil {
+			exportTestResult("failed")
+			failf("Test failed, error: %s", err)
+		}
 	} else {
-		runTest("", testCommandModel.Run())
+		if err := testCommandModel.Run(); err != nil {
+			exportTestResult("failed")
+			failf("Test failed, error: %s", err)
+		}
 	}
 	exportTestResult("succeeded")
 }
