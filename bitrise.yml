@@ -48,6 +48,7 @@ workflows:
     - path::./:
         inputs:
         - is_clean_build: "yes"
+        - output_tool: "xcodebuild"
         - generate_code_coverage_files: "no"
     - script:
         title: Output test
