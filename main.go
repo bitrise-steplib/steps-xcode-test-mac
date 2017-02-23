@@ -204,6 +204,7 @@ func main() {
 	testCommandModel.SetScheme(configs.Scheme)
 	testCommandModel.SetGenerateCodeCoverage(generateCodeCoverage)
 	testCommandModel.SetCustomBuildAction(buildAction...)
+	testCommandModel.Command().SetStdout(os.Stdout).SetStderr(os.Stderr)
 
 	if configs.OutputTool == "xcpretty" {
 		if _, err := xcpretty.New(testCommandModel).Run(); err != nil {
@@ -211,6 +212,7 @@ func main() {
 			failf("Test failed, error: %s", err)
 		}
 	} else {
+
 		if err := testCommandModel.Run(); err != nil {
 			exportTestResult("failed")
 			failf("Test failed, error: %s", err)
