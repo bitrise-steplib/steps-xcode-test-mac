@@ -5,9 +5,12 @@ import (
 	"os"
 	"strings"
 
+	"errors"
+
+	"github.com/bitrise-io/go-utils/command"
 	"github.com/bitrise-io/go-utils/log"
-	cmd "github.com/bitrise-io/steps-xcode-test/command"
-	"github.com/bitrise-io/steps-xcode-test/xcodeutil"
+	"github.com/bitrise-io/go-utils/pathutil"
+	"github.com/bitrise-tools/go-xcode/utility"
 	"github.com/bitrise-tools/go-xcode/xcodebuild"
 	"github.com/bitrise-tools/go-xcode/xcpretty"
 )
@@ -58,6 +61,12 @@ func (configs ConfigsModel) validate() error {
 	if err := validateRequiredInput(configs.ProjectPath, "project_path"); err != nil {
 		return err
 	}
+	if projectPathExists, err := pathutil.IsDirExists(configs.ProjectPath); err != nil {
+		return err
+	} else if !projectPathExists {
+		return errors.New("ProjectPath directory does not exists: %s")
+	}
+
 	if err := validateRequiredInput(configs.Scheme, "scheme"); err != nil {
 		return err
 	}
@@ -107,8 +116,19 @@ func validateRequiredInputWithOptions(value, key string, options []string) error
 	return nil
 }
 
+// ExportEnvironmentWithEnvman ...
+func ExportEnvironmentWithEnvman(keyStr, valueStr string) error {
+	return command.New("envman", "add", "--key", keyStr).SetStdin(strings.NewReader(valueStr)).Run()
+}
+
+// GetXcprettyVersion ...
+func GetXcprettyVersion() (string, error) {
+	cmd := command.New("xcpretty", "-version")
+	return cmd.RunAndReturnTrimmedCombinedOutput()
+}
+
 func exportTestResult(status string) {
-	if err := cmd.ExportEnvironmentWithEnvman("BITRISE_XCODE_TEST_RESULT", status); err != nil {
+	if err := ExportEnvironmentWithEnvman("BITRISE_XCODE_TEST_RESULT", status); err != nil {
 		log.Warnf("Failed to export: BITRISE_XCODE_TEST_RESULT, error: %s", err)
 	}
 }
@@ -149,7 +169,7 @@ func main() {
 	log.Printf("* action: %s", action)
 
 	// Output tools versions
-	xcodebuildVersion, err := xcodeutil.GetXcodeVersion()
+	xcodebuildVersion, err := utility.GetXcodeVersion()
 	if err != nil {
 		exportTestResult("failed")
 		failf("Failed to get the version of xcodebuild! Error: %s", err)
@@ -159,7 +179,7 @@ func main() {
 
 	// xcpretty version
 	if configs.OutputTool == "xcpretty" {
-		xcprettyVersion, err := cmd.GetXcprettyVersion()
+		xcprettyVersion, err := GetXcprettyVersion()
 		if err != nil {
 			log.Warnf("Failed to get the xcpretty version! Error: %s", err)
 		} else {

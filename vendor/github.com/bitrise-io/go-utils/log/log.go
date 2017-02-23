@@ -60,31 +60,6 @@ func Warnf(format string, v ...interface{}) {
 	printfWithColor(colorstring.Yellowf, format, v...)
 }
 
-// Detail ...
-func Detail(format string, v ...interface{}) {
-	printfWithColor(colorstring.NoColorf, format, v...)
-}
-
-// Info ...
-func Info(format string, v ...interface{}) {
-	printfWithColor(colorstring.Bluef, format, v...)
-}
-
-// Done ...
-func Done(format string, v ...interface{}) {
-	printfWithColor(colorstring.Greenf, format, v...)
-}
-
-// Error ...
-func Error(format string, v ...interface{}) {
-	printfWithColor(colorstring.Redf, format, v...)
-}
-
-// Warn ...
-func Warn(format string, v ...interface{}) {
-	printfWithColor(colorstring.Yellowf, format, v...)
-}
-
 //
 // Print with color and timestamp
 
