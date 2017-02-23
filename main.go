@@ -207,12 +207,13 @@ func main() {
 	testCommandModel.Command().SetStdout(os.Stdout).SetStderr(os.Stderr)
 
 	if configs.OutputTool == "xcpretty" {
-		if _, err := xcpretty.New(testCommandModel).Run(); err != nil {
+		xcprettyCmd := xcpretty.New(testCommandModel)
+		xcprettyCmd.Command().SetStdout(os.Stdout).SetStderr(os.Stderr)
+		if _, err := xcprettyCmd.Run(); err != nil {
 			exportTestResult("failed")
 			failf("Test failed, error: %s", err)
 		}
 	} else {
-
 		if err := testCommandModel.Run(); err != nil {
 			exportTestResult("failed")
 			failf("Test failed, error: %s", err)
