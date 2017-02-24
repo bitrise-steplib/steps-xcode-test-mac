@@ -1,6 +1,11 @@
-## Changelog (Current version: 1.0.6)
+## Changelog (Current version: 1.1.0)
 
 -----------------
+
+### 1.1.0 (2017 Feb 24)
+
+* [eeb1a7e] Prepare for 1.1.0
+* [d55cf72] Switch to golang (#5)
 
 ### 1.0.6 (2016 Dec 19)
 
@@ -40,4 +45,4 @@
 
 -----------------
 
-Updated: 2016 Dec 19
+Updated: 2017 Feb 24
