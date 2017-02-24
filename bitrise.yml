@@ -55,6 +55,7 @@ workflows:
         inputs:
         - content: |-
             echo "BITRISE_XCODE_TEST_RESULT: ${BITRISE_XCODE_TEST_RESULT}"
+            
   go-tests:
     before_run:
     - _install-test-tools
