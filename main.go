@@ -61,9 +61,9 @@ func (configs ConfigsModel) validate() error {
 	if err := validateRequiredInput(configs.ProjectPath, "project_path"); err != nil {
 		return err
 	}
-	if projectPathExists, err := pathutil.IsDirExists(configs.ProjectPath); err != nil {
+	if exists, err := pathutil.IsDirExists(configs.ProjectPath); err != nil {
 		return err
-	} else if !projectPathExists {
+	} else if !exists {
 		return errors.New("ProjectPath directory does not exists: %s")
 	}
 
@@ -134,6 +134,7 @@ func exportTestResult(status string) {
 }
 
 func failf(format string, v ...interface{}) {
+	exportTestResult("failed")
 	log.Errorf(format, v...)
 	os.Exit(1)
 }
@@ -162,7 +163,6 @@ func main() {
 	} else if strings.HasSuffix(configs.ProjectPath, ".xcworkspace") {
 		action = "-workspace"
 	} else {
-		exportTestResult("failed")
 		failf("Invalid project file (%s), extension should be (.xcodeproj/.xcworkspace)", configs.ProjectPath)
 	}
 
@@ -171,7 +171,6 @@ func main() {
 	// Output tools versions
 	xcodebuildVersion, err := utility.GetXcodeVersion()
 	if err != nil {
-		exportTestResult("failed")
 		failf("Failed to get the version of xcodebuild! Error: %s", err)
 	}
 
@@ -181,7 +180,7 @@ func main() {
 	if configs.OutputTool == "xcpretty" {
 		xcprettyVersion, err := GetXcprettyVersion()
 		if err != nil {
-			log.Warnf("Failed to get the xcpretty version! Error: %s", err)
+			failf("Failed to get the xcpretty version! Error: %s", err)
 		} else {
 			log.Printf("* xcpretty_version: %s", xcprettyVersion)
 		}
@@ -189,17 +188,17 @@ func main() {
 
 	fmt.Println()
 
-	//setup buildActios
+	// setup buildActios
 	buildAction := []string{}
 
 	if cleanBuild {
 		buildAction = append(buildAction, "clean")
 	}
 
-	//build before test
+	// build before test
 	buildAction = append(buildAction, "build")
 
-	//setup CommandModel for test
+	// setup CommandModel for test
 	testCommandModel := xcodebuild.NewTestCommand(configs.ProjectPath, (action == "-workspace"))
 	testCommandModel.SetScheme(configs.Scheme)
 	testCommandModel.SetGenerateCodeCoverage(generateCodeCoverage)
@@ -209,12 +208,10 @@ func main() {
 		xcprettyCmd := xcpretty.New(testCommandModel)
 
 		if _, err := xcprettyCmd.Run(); err != nil {
-			exportTestResult("failed")
 			failf("Test failed, error: %s", err)
 		}
 	} else {
 		if err := testCommandModel.Run(); err != nil {
-			exportTestResult("failed")
 			failf("Test failed, error: %s", err)
 		}
 	}
