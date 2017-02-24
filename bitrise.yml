@@ -3,7 +3,7 @@ default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 
 app:
   envs:
-  - STEP_VERSION: 1.0.6
+  - STEP_VERSION: 1.1.0
   # define these in your .bitrise.secrets.yml
   - BITRISE_PROJECT_PATH: sample-apps-osx-10-12.xcodeproj
   - BITRISE_SCHEME: sample-apps-osx-10-12
@@ -55,7 +55,7 @@ workflows:
         inputs:
         - content: |-
             echo "BITRISE_XCODE_TEST_RESULT: ${BITRISE_XCODE_TEST_RESULT}"
-            
+
   go-tests:
     before_run:
     - _install-test-tools
