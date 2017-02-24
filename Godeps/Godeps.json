@@ -1,0 +1,46 @@
+{
+	"ImportPath": "github.com/bitrise-steplib/steps-xcode-test-mac",
+	"GoVersion": "go1.7",
+	"GodepVersion": "v79",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/bitrise-io/go-utils/colorstring",
+			"Rev": "5863e947430502abe15cb53a93e955259728ff66"
+		},
+		{
+			"ImportPath": "github.com/bitrise-io/go-utils/command",
+			"Rev": "5863e947430502abe15cb53a93e955259728ff66"
+		},
+		{
+			"ImportPath": "github.com/bitrise-io/go-utils/errorutil",
+			"Rev": "5863e947430502abe15cb53a93e955259728ff66"
+		},
+		{
+			"ImportPath": "github.com/bitrise-io/go-utils/log",
+			"Rev": "5863e947430502abe15cb53a93e955259728ff66"
+		},
+		{
+			"ImportPath": "github.com/bitrise-io/go-utils/pathutil",
+			"Rev": "5863e947430502abe15cb53a93e955259728ff66"
+		},
+		{
+			"ImportPath": "github.com/bitrise-tools/go-xcode/models",
+			"Rev": "2085f4cdcd4e0a6e9f513bfa93777a407273f220"
+		},
+		{
+			"ImportPath": "github.com/bitrise-tools/go-xcode/utility",
+			"Rev": "2085f4cdcd4e0a6e9f513bfa93777a407273f220"
+		},
+		{
+			"ImportPath": "github.com/bitrise-tools/go-xcode/xcodebuild",
+			"Rev": "2085f4cdcd4e0a6e9f513bfa93777a407273f220"
+		},
+		{
+			"ImportPath": "github.com/bitrise-tools/go-xcode/xcpretty",
+			"Rev": "2085f4cdcd4e0a6e9f513bfa93777a407273f220"
+		}
+	]
+}
