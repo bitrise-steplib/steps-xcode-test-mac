@@ -79,11 +79,7 @@ func (configs ConfigsModel) validate() error {
 		return err
 	}
 
-	if err := validateRequiredInputWithOptions(configs.GenerateCodeCoverageFiles, "generate_code_coverage_files", []string{"yes", "no"}); err != nil {
-		return err
-	}
-
-	return nil
+	return validateRequiredInputWithOptions(configs.GenerateCodeCoverageFiles, "generate_code_coverage_files", []string{"yes", "no"})
 }
 
 //--------------------
