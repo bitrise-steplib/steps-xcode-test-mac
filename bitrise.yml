@@ -47,6 +47,11 @@ workflows:
         - branch: "master"
         - pull_request_id: ""
         - clone_depth: ""
+    - certificate-and-profile-installer:
+        inputs:
+        - default_certificate_url: ""
+        - default_certificate_passphrase: ""
+        - default_provisioning_profile_url: ""
     - path::./:
         inputs:
         - is_clean_build: "yes"
