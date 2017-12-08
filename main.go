@@ -10,6 +10,7 @@ import (
 	"github.com/bitrise-io/go-utils/command"
 	"github.com/bitrise-io/go-utils/log"
 	"github.com/bitrise-io/go-utils/pathutil"
+	"github.com/bitrise-io/go-utils/stringutil"
 	"github.com/bitrise-tools/go-xcode/utility"
 	"github.com/bitrise-tools/go-xcode/xcodebuild"
 	"github.com/bitrise-tools/go-xcode/xcpretty"
@@ -78,11 +79,7 @@ func (configs ConfigsModel) validate() error {
 		return err
 	}
 
-	if err := validateRequiredInputWithOptions(configs.GenerateCodeCoverageFiles, "generate_code_coverage_files", []string{"yes", "no"}); err != nil {
-		return err
-	}
-
-	return nil
+	return validateRequiredInputWithOptions(configs.GenerateCodeCoverageFiles, "generate_code_coverage_files", []string{"yes", "no"})
 }
 
 //--------------------
@@ -207,7 +204,9 @@ func main() {
 	if configs.OutputTool == "xcpretty" {
 		xcprettyCmd := xcpretty.New(testCommandModel)
 
-		if _, err := xcprettyCmd.Run(); err != nil {
+		if rawXcodebuildOutput, err := xcprettyCmd.Run(); err != nil {
+			log.Errorf("\nLast lines of the Xcode's build log:")
+			fmt.Println(stringutil.LastNLines(rawXcodebuildOutput, 10))
 			failf("Test failed, error: %s", err)
 		}
 	} else {
