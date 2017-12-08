@@ -1,6 +1,11 @@
-## Changelog (Current version: 1.1.0)
+## Changelog (Current version: 1.1.1)
 
 -----------------
+
+### 1.1.1 (2017 Dec 08)
+
+* [d3fa6d7] Bump version to 1.1.1
+* [558d77b] Print last 10 lines of the Xcode log (#6)
 
 ### 1.1.0 (2017 Feb 24)
 
@@ -45,4 +50,4 @@
 
 -----------------
 
-Updated: 2017 Feb 24
+Updated: 2017 Dec 08
