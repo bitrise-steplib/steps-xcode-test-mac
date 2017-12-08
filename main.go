@@ -209,7 +209,7 @@ func main() {
 		xcprettyCmd := xcpretty.New(testCommandModel)
 
 		if rawXcodebuildOutput, err := xcprettyCmd.Run(); err != nil {
-			log.Errorf("\nLast lines of the Xcode build log:")
+			log.Errorf("\nLast lines of the Xcode's build log:")
 			fmt.Println(stringutil.LastNLines(rawXcodebuildOutput, 10))
 			failf("Test failed, error: %s", err)
 		}
