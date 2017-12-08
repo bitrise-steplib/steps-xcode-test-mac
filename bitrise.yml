@@ -51,6 +51,7 @@ workflows:
         inputs:
         - is_clean_build: "yes"
         - generate_code_coverage_files: "no"
+        - output_tool: xcodebuild
     - script:
         title: Output test
         is_always_run: true
