@@ -1,6 +1,11 @@
-## Changelog (Current version: 1.1.1)
+## Changelog (Current version: 1.1.2)
 
 -----------------
+
+### 1.1.2 (2017 Dec 11)
+
+* [52ba62e] Bump version to 1.1.2
+* [bc43fd4] Update type tag (#7)
 
 ### 1.1.1 (2017 Dec 08)
 
@@ -50,4 +55,4 @@
 
 -----------------
 
-Updated: 2017 Dec 08
+Updated: 2017 Dec 11
