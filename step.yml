@@ -43,6 +43,10 @@ inputs:
 - opts:
     description: |
       The Destination to use.
+
+      Read more in [Xcodebuild Destination Cheatsheet](http://www.mokacoding.com/blog/xcodebuild-destination-options/).
+
+      Example value: `platform=OS X,arch=x86_64`
     is_required: false
     title: Desination name
   destination: $BITRISE_DESTINATION

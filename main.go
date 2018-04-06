@@ -211,12 +211,16 @@ func main() {
 	if configs.OutputTool == "xcpretty" {
 		xcprettyCmd := xcpretty.New(testCommandModel)
 
+		log.Infof("$ %s\n", xcprettyCmd.PrintableCmd())
+
 		if rawXcodebuildOutput, err := xcprettyCmd.Run(); err != nil {
 			log.Errorf("\nLast lines of the Xcode's build log:")
 			fmt.Println(stringutil.LastNLines(rawXcodebuildOutput, 10))
 			failf("Test failed, error: %s", err)
 		}
 	} else {
+		log.Infof("$ %s\n", testCommandModel.PrintableCmd())
+
 		if err := testCommandModel.Run(); err != nil {
 			failf("Test failed, error: %s", err)
 		}

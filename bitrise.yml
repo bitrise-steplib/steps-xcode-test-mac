@@ -57,6 +57,7 @@ workflows:
         - is_clean_build: "yes"
         - generate_code_coverage_files: "no"
         - output_tool: xcodebuild
+        - destination: "platform=OS X,arch=x86_64"
     - script:
         title: Output test
         is_always_run: true
