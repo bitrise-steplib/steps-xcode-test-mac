@@ -40,6 +40,12 @@ inputs:
     is_required: true
     title: Scheme name
   scheme: $BITRISE_SCHEME
+- opts:
+    description: |
+      The Destination to use.
+    is_required: false
+    title: Desination name
+  destination: $BITRISE_DESTINATION
 - is_clean_build: "yes"
   opts:
     is_required: true

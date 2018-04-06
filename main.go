@@ -21,6 +21,7 @@ type ConfigsModel struct {
 	// Project parameters
 	ProjectPath string
 	Scheme      string
+	Destination string
 
 	// Test Run Configs
 	OutputTool   string
@@ -34,6 +35,7 @@ func (configs ConfigsModel) print() {
 	log.Infof("Project Parameters:")
 	log.Printf("- ProjectPath: %s", configs.ProjectPath)
 	log.Printf("- Scheme: %s", configs.Scheme)
+	log.Printf("- Destination: %s", configs.Destination)
 
 	fmt.Println()
 	log.Infof("Test Run Configs:")
@@ -48,6 +50,7 @@ func createConfigsModelFromEnvs() ConfigsModel {
 		// Project Parameters
 		ProjectPath: os.Getenv("project_path"),
 		Scheme:      os.Getenv("scheme"),
+		Destination: os.Getenv("destination"),
 
 		// Test Run Configs
 		OutputTool:   os.Getenv("output_tool"),
@@ -200,6 +203,10 @@ func main() {
 	testCommandModel.SetScheme(configs.Scheme)
 	testCommandModel.SetGenerateCodeCoverage(generateCodeCoverage)
 	testCommandModel.SetCustomBuildAction(buildAction...)
+
+	if configs.Destination != "" {
+		testCommandModel.SetDestination(configs.Destination)
+	}
 
 	if configs.OutputTool == "xcpretty" {
 		xcprettyCmd := xcpretty.New(testCommandModel)
