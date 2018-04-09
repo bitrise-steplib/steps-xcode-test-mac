@@ -52,8 +52,6 @@ workflows:
             echo "BITRISE_XCODE_TEST_RESULT: ${BITRISE_XCODE_TEST_RESULT}"
 
   go-tests:
-    before_run:
-    - _install-test-tools
     steps:
     - script:
         title: export go files to test
