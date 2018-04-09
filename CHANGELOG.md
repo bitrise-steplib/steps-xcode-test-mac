@@ -1,6 +1,13 @@
-## Changelog (Current version: 1.1.2)
+## Changelog (Current version: 1.2.0)
 
 -----------------
+
+### 1.2.0 (2018 Apr 09)
+
+* [c55342e] install releaseman
+* [8663ba9] prepare for 1.2.0
+* [b92cc85] step update (#9)
+* [b0c2189] Add support for destination option with xcodebuild (#8)
 
 ### 1.1.2 (2017 Dec 11)
 
@@ -55,4 +62,4 @@
 
 -----------------
 
-Updated: 2017 Dec 11
+Updated: 2018 Apr 09
