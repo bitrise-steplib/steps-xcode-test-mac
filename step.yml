@@ -49,7 +49,7 @@ inputs:
       Example value: `platform=OS X,arch=x86_64`
     is_required: false
     title: Desination name
-  destination: $BITRISE_DESTINATION
+  destination:
 - is_clean_build: "yes"
   opts:
     is_required: true
