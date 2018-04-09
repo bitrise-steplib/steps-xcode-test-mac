@@ -1,4 +1,4 @@
-format_version: 1.3.1
+format_version: 5
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 
 app:
@@ -22,7 +22,7 @@ workflows:
         inputs:
         - content: rm -rf ./_tmp
     - change-workdir:
-        title: cd ./_tmp
+        title: change workdir to ./_tmp
         run_if: true
         inputs:
         - path: ./_tmp
@@ -48,8 +48,7 @@ workflows:
         title: output test
         is_always_run: true
         inputs:
-        - content: |-
-            echo "BITRISE_XCODE_TEST_RESULT: ${BITRISE_XCODE_TEST_RESULT}"
+        - content: echo "BITRISE_XCODE_TEST_RESULT: ${BITRISE_XCODE_TEST_RESULT}"
 
   go-tests:
     steps:
