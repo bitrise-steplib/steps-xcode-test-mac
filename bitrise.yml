@@ -48,7 +48,7 @@ workflows:
         title: output test
         is_always_run: true
         inputs:
-        - content: echo "BITRISE_XCODE_TEST_RESULT: ${BITRISE_XCODE_TEST_RESULT}"
+        - content: 'echo "BITRISE_XCODE_TEST_RESULT: ${BITRISE_XCODE_TEST_RESULT}"'
 
   go-tests:
     steps:
