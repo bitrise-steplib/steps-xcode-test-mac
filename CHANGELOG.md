@@ -1,6 +1,11 @@
-## Changelog (Current version: 1.2.0)
+## Changelog (Current version: 1.2.1)
 
 -----------------
+
+### 1.2.1 (2018 Apr 10)
+
+* [03dd695] prepare for 1.2.1
+* [d1b9194] step definition update (#10)
 
 ### 1.2.0 (2018 Apr 09)
 
@@ -62,4 +67,4 @@
 
 -----------------
 
-Updated: 2018 Apr 09
+Updated: 2018 Apr 10
