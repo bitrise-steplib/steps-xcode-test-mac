@@ -1,7 +1,6 @@
 title: Xcode Test for Mac
-summary: |-
-  Run Xcode Test on your Mac OS X app project.
-description: Runs Xcode's `test` action, configured for Mac OS X app projects.
+summary: Runs Xcode Test on your macOS app project.
+description: Runs Xcode's `test` action, configured for macOS app projects.
 website: https://github.com/bitrise-steplib/steps-xcode-test-mac
 source_code_url: https://github.com/bitrise-steplib/steps-xcode-test-mac
 support_url: https://github.com/bitrise-steplib/steps-xcode-test-mac/issues
@@ -48,12 +47,12 @@ inputs:
 
       Example value: `platform=OS X,arch=x86_64`
     is_required: false
-    title: Desination name
+    title: Destination name
   destination:
 - is_clean_build: "yes"
   opts:
     is_required: true
-    title: Do a clean Xcode build before testing?
+    title: Should a clean Xcode build run before testing?
     value_options:
     - "yes"
     - "no"
