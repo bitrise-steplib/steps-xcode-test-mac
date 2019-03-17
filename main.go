@@ -14,6 +14,7 @@ import (
 	"github.com/bitrise-tools/go-xcode/utility"
 	"github.com/bitrise-tools/go-xcode/xcodebuild"
 	"github.com/bitrise-tools/go-xcode/xcpretty"
+	"github.com/kballard/go-shellquote"
 )
 
 // ConfigsModel ...
@@ -28,6 +29,7 @@ type ConfigsModel struct {
 	IsCleanBuild string
 
 	GenerateCodeCoverageFiles string
+	XcodebuildOptions         string
 }
 
 func (configs ConfigsModel) print() {
@@ -43,6 +45,7 @@ func (configs ConfigsModel) print() {
 	log.Printf("- IsCleanBuild: %s", configs.IsCleanBuild)
 
 	log.Printf("- GenerateCodeCoverageFiles: %s", configs.GenerateCodeCoverageFiles)
+	log.Printf("- XcodebuildOptions: %s", configs.XcodebuildOptions)
 }
 
 func createConfigsModelFromEnvs() ConfigsModel {
@@ -57,6 +60,7 @@ func createConfigsModelFromEnvs() ConfigsModel {
 		IsCleanBuild: os.Getenv("is_clean_build"),
 
 		GenerateCodeCoverageFiles: os.Getenv("generate_code_coverage_files"),
+		XcodebuildOptions: os.Getenv("xcodebuild_options"),
 	}
 }
 
@@ -188,7 +192,7 @@ func main() {
 
 	fmt.Println()
 
-	// setup buildActios
+	// setup buildActions
 	buildAction := []string{}
 
 	if cleanBuild {
@@ -206,6 +210,14 @@ func main() {
 
 	if configs.Destination != "" {
 		testCommandModel.SetDestination(configs.Destination)
+	}
+
+	if configs.XcodebuildOptions != "" {
+		options, err := shellquote.Split(configs.XcodebuildOptions)
+		if err != nil {
+			failf("Failed to shell split XcodebuildOptions (%s), error: %s", configs.XcodebuildOptions)
+		}
+		testCommandModel.SetCustomOptions(options)
 	}
 
 	if configs.OutputTool == "xcpretty" {
