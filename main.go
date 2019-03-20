@@ -101,7 +101,7 @@ func validateRequiredInput(value, key string) error {
 }
 
 func validateRequiredInputWithOptions(value, key string, options []string) error {
-	if err := validateRequiredInput(key, value); err != nil {
+	if err := validateRequiredInput(value, key); err != nil {
 		return err
 	}
 
