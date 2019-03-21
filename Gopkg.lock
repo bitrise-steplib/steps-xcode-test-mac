@@ -3,19 +3,52 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:97fd4c6fa762de1ba30a1d341f5511cad56ca1487ca8b286bcdaf04a0358d12b"
   name = "github.com/bitrise-io/go-utils"
-  packages = ["colorstring","command","errorutil","log","pathutil","stringutil"]
+  packages = [
+    "colorstring",
+    "command",
+    "errorutil",
+    "log",
+    "pathutil",
+    "stringutil",
+  ]
+  pruneopts = ""
   revision = "f1da7139131b85ab2a4bd4ffacbdc889a40018a1"
 
 [[projects]]
   branch = "master"
+  digest = "1:b55ec0f1a7c0587dffc3696044dc90783531d5fd8ca8e21c3c4c032528127609"
   name = "github.com/bitrise-tools/go-xcode"
-  packages = ["models","utility","xcodebuild","xcpretty"]
+  packages = [
+    "models",
+    "utility",
+    "xcodebuild",
+    "xcpretty",
+  ]
+  pruneopts = ""
   revision = "c23fa74e7b04374fbff484fd12ba87cf64cd89e1"
+
+[[projects]]
+  branch = "master"
+  digest = "1:63e7368fcf6b54804076eaec26fd9cf0c4466166b272393db4b93102e1e962df"
+  name = "github.com/kballard/go-shellquote"
+  packages = ["."]
+  pruneopts = ""
+  revision = "95032a82bc518f77982ea72343cc1ade730072f0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b83393da74abdf9dc224e336ea73f2fc04af05ba927393f7d780a249b2e4fa67"
+  input-imports = [
+    "github.com/bitrise-io/go-utils/command",
+    "github.com/bitrise-io/go-utils/log",
+    "github.com/bitrise-io/go-utils/pathutil",
+    "github.com/bitrise-io/go-utils/stringutil",
+    "github.com/bitrise-tools/go-xcode/utility",
+    "github.com/bitrise-tools/go-xcode/xcodebuild",
+    "github.com/bitrise-tools/go-xcode/xcpretty",
+    "github.com/kballard/go-shellquote",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
