@@ -18,7 +18,8 @@ workflows:
     - errcheck:
     - go-test:
     after_run:
-    - test 
+    - test
+    - test_no_code_signing 
 
   # ----------------------------------------------------------------
   # --- workflow to Step Test
@@ -49,8 +50,38 @@ workflows:
         inputs:
         - is_clean_build: "yes"
         - generate_code_coverage_files: "no"
-        - output_tool: xcodebuild
+        - output_tool: xcpretty
         - destination: "platform=OS X,arch=x86_64"
+    - script:
+        title: output test
+        is_always_run: true
+        inputs:
+        - content: 'echo "BITRISE_XCODE_TEST_RESULT: ${BITRISE_XCODE_TEST_RESULT}"'
+
+  test_no_code_signing:
+    steps:
+    - script:
+        title: cleanup ./_tmp
+        inputs:
+        - content: rm -rf ./_tmp
+    - change-workdir:
+        title: change workdir to ./_tmp
+        run_if: true
+        inputs:
+        - path: ./_tmp
+        - is_create_path: true
+    - script:
+        title: git clone sample project
+        inputs:
+        - content: git clone $SAMPLE_APP_URL .
+    - path::./:
+        title: step test with no codesigning
+        inputs:
+        - is_clean_build: "yes"
+        - generate_code_coverage_files: "no"
+        - output_tool: xcpretty
+        - destination: "platform=OS X,arch=x86_64"
+        - xcodebuild_options: "CODE_SIGNING_REQUIRED=NO"
     - script:
         title: output test
         is_always_run: true
