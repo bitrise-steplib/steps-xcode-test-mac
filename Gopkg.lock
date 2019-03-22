@@ -10,11 +10,21 @@
     "command",
     "errorutil",
     "log",
+    "parseutil",
     "pathutil",
+    "pointers",
     "stringutil",
   ]
   pruneopts = ""
   revision = "f1da7139131b85ab2a4bd4ffacbdc889a40018a1"
+
+[[projects]]
+  branch = "master"
+  digest = "1:3511df2e558e2755b01ce5670ddc536fa031e63e5b4974bb0f35aac53704f06e"
+  name = "github.com/bitrise-tools/go-steputils"
+  packages = ["stepconf"]
+  pruneopts = ""
+  revision = "ec226b2359fcd806be64f0ad2217d8e741a1ff11"
 
 [[projects]]
   branch = "master"
@@ -43,8 +53,8 @@
   input-imports = [
     "github.com/bitrise-io/go-utils/command",
     "github.com/bitrise-io/go-utils/log",
-    "github.com/bitrise-io/go-utils/pathutil",
     "github.com/bitrise-io/go-utils/stringutil",
+    "github.com/bitrise-tools/go-steputils/stepconf",
     "github.com/bitrise-tools/go-xcode/utility",
     "github.com/bitrise-tools/go-xcode/xcodebuild",
     "github.com/bitrise-tools/go-xcode/xcpretty",
