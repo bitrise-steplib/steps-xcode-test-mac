@@ -29,7 +29,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:0ba584e460213e429ce9ad6f82f18ebe74841e687450f677d5c606fb763e15ab"
+  digest = "1:fe46d0ae6aca13fe88c5d37835e1eb253188ebf8e42f20fcd396dca2de16892d"
   name = "github.com/bitrise-io/go-xcode"
   packages = [
     "models",
@@ -38,15 +38,15 @@
     "xcpretty",
   ]
   pruneopts = ""
-  revision = "04a02fcd3c06c698d47ce4e27dbe105d6ea8eadc"
+  revision = "a49d262bd2151997b9b18f882654eae3aab31a9d"
 
 [[projects]]
-  digest = "1:b759103c9b4135568253c17d2866064cde398e93764b611caabf5aa8e3059685"
+  digest = "1:2f0c811248aeb64978037b357178b1593372439146bda860cb16f2c80785ea93"
   name = "github.com/hashicorp/go-version"
   packages = ["."]
   pruneopts = ""
-  revision = "d40cf49b3a77bba84a7afdbd7f1dc295d114efb1"
-  version = "v1.1.0"
+  revision = "ac23dc3fea5d1a983c43f6a0f6e2c13f0195d8bd"
+  version = "v1.2.0"
 
 [[projects]]
   branch = "master"
