@@ -5,10 +5,10 @@ import (
 	"os"
 	"strings"
 
+	"github.com/bitrise-io/go-steputils/stepconf"
 	"github.com/bitrise-io/go-utils/command"
 	"github.com/bitrise-io/go-utils/log"
 	"github.com/bitrise-io/go-utils/stringutil"
-	"github.com/bitrise-io/go-steputils/stepconf"
 	"github.com/bitrise-io/go-xcode/utility"
 	"github.com/bitrise-io/go-xcode/xcodebuild"
 	"github.com/bitrise-io/go-xcode/xcpretty"
@@ -28,6 +28,7 @@ type configs struct {
 
 	GenerateCodeCoverageFiles bool   `env:"generate_code_coverage_files,opt[yes,no]"`
 	XcodebuildOptions         string `env:"xcodebuild_options"`
+	DisableIndexWhileBuilding bool   `env:"disable_index_while_building,opt[yes,no]"`
 }
 
 // ExportEnvironmentWithEnvman ...
@@ -113,6 +114,8 @@ func main() {
 	testCommandModel.SetScheme(cfgs.Scheme)
 	testCommandModel.SetGenerateCodeCoverage(cfgs.GenerateCodeCoverageFiles)
 	testCommandModel.SetCustomBuildAction(buildAction...)
+
+	testCommandModel.SetDisableIndexWhileBuilding(cfgs.DisableIndexWhileBuilding)
 
 	if cfgs.Destination != "" {
 		testCommandModel.SetDestination(cfgs.Destination)
