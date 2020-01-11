@@ -107,7 +107,7 @@ func main() {
 	}
 
 	// build before test
-	buildAction = append(buildAction, "build")
+	buildAction = append(buildAction, "build-for-testing")
 
 	// setup CommandModel for test
 	testCommandModel := xcodebuild.NewTestCommand(cfgs.ProjectPath, (action == "-workspace"))
