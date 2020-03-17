@@ -10,9 +10,6 @@ project_type_tags:
 - macos
 type_tags:
 - test
-dependencies:
-- manager: _
-  name: xcode
 deps:
   check_only:
   - name: xcode
