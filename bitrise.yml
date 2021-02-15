@@ -35,11 +35,10 @@ workflows:
         inputs:
         - path: ./_tmp
         - is_create_path: true
-        - branch: fixed-master
     - script:
         title: git clone sample project
         inputs:
-        - content: git clone $SAMPLE_APP_URL .
+        - content: git clone --single-branch --branch fixed-master $SAMPLE_APP_URL .
     - certificate-and-profile-installer:
         title: install codesigning files
         inputs:
