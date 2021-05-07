@@ -73,7 +73,7 @@ workflows:
     - script:
         title: git clone sample project
         inputs:
-        - content: git clone $SAMPLE_APP_URL .
+        - content: git clone --single-branch --branch NO-JIRA-update-certs $SAMPLE_APP_URL .
     - path::./:
         title: step test with no codesigning
         inputs:
