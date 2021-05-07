@@ -89,23 +89,6 @@ workflows:
         - content: 'echo "BITRISE_XCODE_TEST_RESULT: ${BITRISE_XCODE_TEST_RESULT}"'
 
   # ----------------------------------------------------------------
-  # --- Utility workflows
-  dep-update:
-    title: dep update
-    description: |
-      Used for updating bitrise dependencies with dep
-    steps:
-    - script:
-        title: dependency update
-        inputs:
-        - content: |-
-            #!/bin/bash
-            set -ex
-            go get -u -v github.com/golang/dep/cmd/dep
-            dep ensure -v
-            dep ensure -v -update
-
-  # ----------------------------------------------------------------
   # --- workflow to Share this step into a Step Library
   audit-this-step:
     steps:
