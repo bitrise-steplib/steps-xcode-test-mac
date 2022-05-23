@@ -104,7 +104,7 @@ inputs:
     - xcpretty
     - xcodebuild
     is_required: true
-- xcodebuild_options: ""
+- xcodebuild_options: "CODE_SIGNING_ALLOWED='NO'"
   opts:
     title: Additional options for xcodebuild call
     description: |-
