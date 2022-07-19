@@ -18,7 +18,7 @@ func TestGivenStep_WhenXCPrettyInstallSucceeds_ThenOutputToolIsXCPretty(t *testi
 
 	step := NewStep(logger, xcpretty)
 	outputTool := step.ensureXCPretty()
-	require.Equal(t, "xcpretty", outputTool)
+	require.Equal(t, xcprettyFormatter, outputTool)
 }
 
 func TestGivenStep_WhenXCPrettyInstallFails_ThenOutputToolIsXcodebuild(t *testing.T) {
@@ -29,5 +29,5 @@ func TestGivenStep_WhenXCPrettyInstallFails_ThenOutputToolIsXcodebuild(t *testin
 
 	step := NewStep(logger, xcpretty)
 	outputTool := step.ensureXCPretty()
-	require.Equal(t, "xcodebuild", outputTool)
+	require.Equal(t, xcodebuildFormatter, outputTool)
 }
