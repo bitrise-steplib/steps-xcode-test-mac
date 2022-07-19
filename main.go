@@ -5,11 +5,15 @@ import (
 	"os"
 	"strings"
 
+	xcprettyi "bitrise-steplib/steps-xcode-test-mac/xcpretty"
+
 	"github.com/bitrise-io/go-steputils/stepconf"
 	"github.com/bitrise-io/go-utils/command"
 	"github.com/bitrise-io/go-utils/log"
 	"github.com/bitrise-io/go-utils/stringutil"
+	logv2 "github.com/bitrise-io/go-utils/v2/log"
 	"github.com/bitrise-io/go-xcode/utility"
+	xcpretty2 "github.com/bitrise-io/go-xcode/v2/xcpretty"
 	"github.com/bitrise-io/go-xcode/xcodebuild"
 	"github.com/bitrise-io/go-xcode/xcpretty"
 	"github.com/kballard/go-shellquote"
@@ -58,7 +62,32 @@ func failf(format string, v ...interface{}) {
 // Main
 //--------------------
 
-func main() {
+type Step struct {
+	logger   logv2.Logger
+	xcpretty xcprettyi.Installer
+}
+
+func NewStep(logger logv2.Logger, xcpretty xcprettyi.Installer) Step {
+	return Step{logger: logger, xcpretty: xcpretty}
+}
+
+func (s Step) ensureXCPretty() string {
+	outputTool := "xcpretty"
+
+	ver, err := s.xcpretty.Install()
+	if err != nil {
+		log.Warnf("Failed to ensure xcpretty log formatter: %s", err)
+		log.Printf("Switching to xcodebuild for output tool")
+		outputTool = "xcodebuild"
+	} else {
+		log.Printf("- xcpretty version: %s", ver.String())
+		fmt.Println()
+	}
+
+	return outputTool
+}
+
+func (s Step) run() {
 	var cfgs configs
 	if err := stepconf.Parse(&cfgs); err != nil {
 		failf("Issue with input: %s", err)
@@ -87,15 +116,8 @@ func main() {
 
 	log.Printf("* xcodebuild_version: %s (%s)", xcodebuildVersion.Version, xcodebuildVersion.BuildVersion)
 
-	// xcpretty version
-	if cfgs.OutputTool == "xcpretty" {
-		xcprettyVersion, err := GetXcprettyVersion()
-		if err != nil {
-			failf("Failed to get the xcpretty version! Error: %s", err)
-		} else {
-			log.Printf("* xcpretty_version: %s", xcprettyVersion)
-		}
-	}
+	// xcpretty
+	cfgs.OutputTool = s.ensureXCPretty()
 
 	fmt.Println()
 
@@ -147,4 +169,12 @@ func main() {
 		}
 	}
 	exportTestResult("succeeded")
+}
+
+func main() {
+	logger := logv2.NewLogger()
+	xcpretty := xcprettyi.NewInstaller(logger, xcpretty2.NewXcpretty(logger))
+
+	step := NewStep(logger, xcpretty)
+	step.run()
 }
