@@ -72,7 +72,7 @@ func NewStep(logger logV2.Logger, xcpretty xcprettyinstaller.Installer) Step {
 	return Step{logger: logger, xcpretty: xcpretty}
 }
 
-func (s Step) ensureXCPretty() string {
+func (s Step) selectLogFormatter() string {
 	outputTool := xcprettyFormatter
 
 	ver, err := s.xcpretty.Install()
@@ -118,7 +118,7 @@ func (s Step) run() {
 	log.Printf("* xcodebuild_version: %s (%s)", xcodebuildVersion.Version, xcodebuildVersion.BuildVersion)
 
 	// xcpretty
-	cfgs.OutputTool = s.ensureXCPretty()
+	cfgs.OutputTool = s.selectLogFormatter()
 
 	fmt.Println()
 
