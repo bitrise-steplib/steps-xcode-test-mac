@@ -5,14 +5,23 @@ import (
 	"os"
 	"strings"
 
+	xcprettyinstaller "bitrise-steplib/steps-xcode-test-mac/xcpretty"
+
 	"github.com/bitrise-io/go-steputils/stepconf"
 	"github.com/bitrise-io/go-utils/command"
 	"github.com/bitrise-io/go-utils/log"
 	"github.com/bitrise-io/go-utils/stringutil"
+	logV2 "github.com/bitrise-io/go-utils/v2/log"
 	"github.com/bitrise-io/go-xcode/utility"
+	xcprettyV2 "github.com/bitrise-io/go-xcode/v2/xcpretty"
 	"github.com/bitrise-io/go-xcode/xcodebuild"
 	"github.com/bitrise-io/go-xcode/xcpretty"
 	"github.com/kballard/go-shellquote"
+)
+
+const (
+	xcprettyFormatter   = "xcpretty"
+	xcodebuildFormatter = "xcodebuild"
 )
 
 // configs ...
@@ -36,12 +45,6 @@ func ExportEnvironmentWithEnvman(keyStr, valueStr string) error {
 	return command.New("envman", "add", "--key", keyStr).SetStdin(strings.NewReader(valueStr)).Run()
 }
 
-// GetXcprettyVersion ...
-func GetXcprettyVersion() (string, error) {
-	cmd := command.New("xcpretty", "-version")
-	return cmd.RunAndReturnTrimmedCombinedOutput()
-}
-
 func exportTestResult(status string) {
 	if err := ExportEnvironmentWithEnvman("BITRISE_XCODE_TEST_RESULT", status); err != nil {
 		log.Warnf("Failed to export: BITRISE_XCODE_TEST_RESULT, error: %s", err)
@@ -58,7 +61,34 @@ func failf(format string, v ...interface{}) {
 // Main
 //--------------------
 
-func main() {
+// Step ...
+type Step struct {
+	logger   logV2.Logger
+	xcpretty xcprettyinstaller.Installer
+}
+
+// NewStep ...
+func NewStep(logger logV2.Logger, xcpretty xcprettyinstaller.Installer) Step {
+	return Step{logger: logger, xcpretty: xcpretty}
+}
+
+func (s Step) selectLogFormatter() string {
+	outputTool := xcprettyFormatter
+
+	ver, err := s.xcpretty.Install()
+	if err != nil {
+		log.Warnf("Failed to ensure xcpretty log formatter: %s", err)
+		log.Printf("Switching to xcodebuild for output tool")
+		outputTool = xcodebuildFormatter
+	} else {
+		log.Printf("- xcpretty version: %s", ver.String())
+		fmt.Println()
+	}
+
+	return outputTool
+}
+
+func (s Step) run() {
 	var cfgs configs
 	if err := stepconf.Parse(&cfgs); err != nil {
 		failf("Issue with input: %s", err)
@@ -87,15 +117,8 @@ func main() {
 
 	log.Printf("* xcodebuild_version: %s (%s)", xcodebuildVersion.Version, xcodebuildVersion.BuildVersion)
 
-	// xcpretty version
-	if cfgs.OutputTool == "xcpretty" {
-		xcprettyVersion, err := GetXcprettyVersion()
-		if err != nil {
-			failf("Failed to get the xcpretty version! Error: %s", err)
-		} else {
-			log.Printf("* xcpretty_version: %s", xcprettyVersion)
-		}
-	}
+	// xcpretty
+	cfgs.OutputTool = s.selectLogFormatter()
 
 	fmt.Println()
 
@@ -129,7 +152,7 @@ func main() {
 		testCommandModel.SetCustomOptions(options)
 	}
 
-	if cfgs.OutputTool == "xcpretty" {
+	if cfgs.OutputTool == xcprettyFormatter {
 		xcprettyCmd := xcpretty.New(testCommandModel)
 
 		log.Infof("$ %s\n", xcprettyCmd.PrintableCmd())
@@ -147,4 +170,12 @@ func main() {
 		}
 	}
 	exportTestResult("succeeded")
+}
+
+func main() {
+	logger := logV2.NewLogger()
+	xcpretty := xcprettyinstaller.NewInstaller(logger, xcprettyV2.NewXcpretty(logger))
+
+	step := NewStep(logger, xcpretty)
+	step.run()
 }
