@@ -42,11 +42,6 @@ project_type_tags:
 - macos
 type_tags:
 - test
-deps:
-  check_only:
-  - name: xcode
-  brew:
-  - name: go
 toolkit:
   go:
     package_name: github.com/bitrise-steplib/steps-xcode-test-mac
