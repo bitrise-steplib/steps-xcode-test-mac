@@ -72,17 +72,17 @@ func NewStep(logger logV2.Logger, xcpretty xcprettyinstaller.Installer) Step {
 	return Step{logger: logger, xcpretty: xcpretty}
 }
 
-func (s Step) selectLogFormatter() string {
-	outputTool := xcprettyFormatter
-
-	ver, err := s.xcpretty.Install()
-	if err != nil {
-		log.Warnf("Failed to ensure xcpretty log formatter: %s", err)
-		log.Printf("Switching to xcodebuild for output tool")
-		outputTool = xcodebuildFormatter
-	} else {
-		log.Printf("- xcpretty version: %s", ver.String())
-		fmt.Println()
+func (s Step) selectLogFormatter(outputTool string) string {
+	if outputTool == xcprettyFormatter {
+		ver, err := s.xcpretty.Install()
+		if err != nil {
+			log.Warnf("Failed to ensure xcpretty log formatter: %s", err)
+			log.Printf("Switching to xcodebuild for output tool")
+			return xcodebuildFormatter
+		} else {
+			log.Printf("- xcpretty version: %s", ver.String())
+			fmt.Println()
+		}
 	}
 
 	return outputTool
@@ -118,7 +118,7 @@ func (s Step) run() {
 	log.Printf("* xcodebuild_version: %s (%s)", xcodebuildVersion.Version, xcodebuildVersion.BuildVersion)
 
 	// xcpretty
-	cfgs.OutputTool = s.selectLogFormatter()
+	cfgs.OutputTool = s.selectLogFormatter(cfgs.OutputTool)
 
 	fmt.Println()
 
