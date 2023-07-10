@@ -127,7 +127,7 @@ func (s Step) run() {
 	testCommandModel.SetGenerateCodeCoverage(cfgs.GenerateCodeCoverageFiles)
 	testCommandModel.SetCustomBuildAction(buildAction...)
 
-	// `Package.swift` project files do not have a xcodebuild parameter. Instead, xcodebuild needs to be run from the
+	// `Package.swift` project files do not have an xcodebuild parameter. Instead, xcodebuild needs to be run from the
 	// folder where this file is located, and then it will automatically detect it.
 	workDir := filepath.Dir(cfgs.ProjectPath)
 	testCommandModel.SetDir(workDir)
