@@ -28,7 +28,7 @@ const (
 // configs ...
 type configs struct {
 	// Project parameters
-	ProjectPath string `env:"project_path,dir"`
+	ProjectPath string `env:"project_path"`
 	Scheme      string `env:"scheme,required"`
 	Destination string `env:"destination"`
 
