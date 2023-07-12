@@ -1,23 +1,35 @@
 format_version: 7
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 
-app:
-  envs:
-  # define these in your .bitrise.secrets.yml
-  - SAMPLE_APP_URL: https://github.com/bitrise-samples/macos-sample-app.git
-  - BITRISE_PROJECT_PATH: macos-sample-app.xcodeproj
-  - BITRISE_SCHEME: macos-sample-app
-
 workflows:
   ci:
     steps:
     - git::https://github.com/bitrise-steplib/steps-check.git: { }
     after_run:
-    - test
+    - test-mac
+    - test-spm
 
   # ----------------------------------------------------------------
   # --- workflow to Step Test
-  test:
+  test-mac:
+    envs:
+    - SAMPLE_APP_URL: https://github.com/bitrise-samples/macos-sample-app.git
+    - BITRISE_PROJECT_PATH: macos-sample-app.xcodeproj
+    - BITRISE_SCHEME: macos-sample-app
+    - BRANCH: master
+    after_run:
+    - _run_test
+
+  test-spm:
+    envs:
+    - SAMPLE_APP_URL: https://github.com/bitrise-io/sample-spm-project.git
+    - BITRISE_PROJECT_PATH: Package.swift
+    - BITRISE_SCHEME: CoolFeature-Package
+    - BRANCH: main
+    after_run:
+    - _run_test
+
+  _run_test:
     steps:
     - script:
         title: cleanup ./_tmp
@@ -34,13 +46,7 @@ workflows:
         inputs:
         - repository_url: $SAMPLE_APP_URL
         - clone_into_dir: .
-        - branch: master
-    - certificate-and-profile-installer:
-        title: install codesigning files
-        inputs:
-        - default_certificate_url: ""
-        - default_certificate_passphrase: ""
-        - default_provisioning_profile_url: ""
+        - branch: $BRANCH
     - path::./:
         title: step test
         inputs:

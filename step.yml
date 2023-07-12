@@ -51,10 +51,10 @@ is_skippable: false
 inputs:
 - opts:
     description: |
-      A `.xcodeproj` or `.xcworkspace` path, relative to
+      A `.xcodeproj`, `.xcworkspace` or `Package.swift` path, relative to
       the Working directory (if specified).
     is_required: true
-    title: Project (or Workspace) path
+    title: Project, Workspace or Package path
   project_path: $BITRISE_PROJECT_PATH
 - opts:
     description: |

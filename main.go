@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	xcprettyinstaller "bitrise-steplib/steps-xcode-test-mac/xcpretty"
@@ -27,7 +28,7 @@ const (
 // configs ...
 type configs struct {
 	// Project parameters
-	ProjectPath string `env:"project_path,dir"`
+	ProjectPath string `env:"project_path"`
 	Scheme      string `env:"scheme,required"`
 	Destination string `env:"destination"`
 
@@ -97,18 +98,6 @@ func (s Step) run() {
 	stepconf.Print(cfgs)
 	fmt.Println()
 
-	// Project-or-Workspace flag
-	action := ""
-	if strings.HasSuffix(cfgs.ProjectPath, ".xcodeproj") {
-		action = "-project"
-	} else if strings.HasSuffix(cfgs.ProjectPath, ".xcworkspace") {
-		action = "-workspace"
-	} else {
-		failf("Invalid project file (%s), extension should be (.xcodeproj/.xcworkspace)", cfgs.ProjectPath)
-	}
-
-	log.Printf("* action: %s", action)
-
 	// Output tools versions
 	xcodebuildVersion, err := utility.GetXcodeVersion()
 	if err != nil {
@@ -133,10 +122,15 @@ func (s Step) run() {
 	buildAction = append(buildAction, "build")
 
 	// setup CommandModel for test
-	testCommandModel := xcodebuild.NewTestCommand(cfgs.ProjectPath, (action == "-workspace"))
+	testCommandModel := xcodebuild.NewTestCommand(cfgs.ProjectPath)
 	testCommandModel.SetScheme(cfgs.Scheme)
 	testCommandModel.SetGenerateCodeCoverage(cfgs.GenerateCodeCoverageFiles)
 	testCommandModel.SetCustomBuildAction(buildAction...)
+
+	// `Package.swift` project files do not have an xcodebuild parameter. Instead, xcodebuild needs to be run from the
+	// folder where this file is located, and then it will automatically detect it.
+	workDir := filepath.Dir(cfgs.ProjectPath)
+	testCommandModel.SetDir(workDir)
 
 	testCommandModel.SetDisableIndexWhileBuilding(cfgs.DisableIndexWhileBuilding)
 
