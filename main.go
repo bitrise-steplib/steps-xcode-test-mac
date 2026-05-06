@@ -1,13 +1,18 @@
 package main
 
 import (
+	"bytes"
+	"context"
 	"fmt"
+	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 
 	xcprettyinstaller "bitrise-steplib/steps-xcode-test-mac/xcpretty"
 
+	"github.com/bitrise-io/bitrise-build-cache-cli/v2/pkg/reactnative/wrap"
 	"github.com/bitrise-io/go-steputils/stepconf"
 	"github.com/bitrise-io/go-utils/command"
 	"github.com/bitrise-io/go-utils/log"
@@ -19,6 +24,70 @@ import (
 	"github.com/bitrise-io/go-xcode/xcpretty"
 	"github.com/kballard/go-shellquote"
 )
+
+// runXcodebuildWithRNWrap routes an xcodebuild invocation through
+// `bitrise-build-cache react-native run -- ...` when React Native build cache
+// is active on the host. Returns (combinedOutput, didRun, err). When didRun
+// is false, callers should fall through to the existing v1 path.
+//
+// When useXcpretty is true and the wrap engages, xcpretty is preserved by
+// piping the wrapped command's stdout into a separately-spawned xcpretty
+// process, while teeing the raw output into the returned string for the
+// existing log-parsing path.
+func runXcodebuildWithRNWrap(originalCmd *exec.Cmd, useXcpretty bool) (string, bool, error) {
+	det := wrap.Detect(context.Background(), wrap.DetectParams{Logger: logV2.NewLogger()})
+	if !det.ReactNativeEnabled {
+		return "", false, nil
+	}
+
+	args := originalCmd.Args
+	if len(args) == 0 {
+		return "", false, nil
+	}
+	name, wrapped := wrap.Wrap(det, args[0], args[1:])
+	display := append([]string{name}, wrapped...)
+	log.Infof("$ %s\n", strings.Join(display, " "))
+
+	var combined bytes.Buffer
+	xcCmd := exec.Command(name, wrapped...) //nolint:gosec
+	xcCmd.Dir = originalCmd.Dir
+
+	if !useXcpretty {
+		xcCmd.Stdout = io.MultiWriter(os.Stdout, &combined)
+		xcCmd.Stderr = io.MultiWriter(os.Stderr, &combined)
+
+		return combined.String(), true, xcCmd.Run()
+	}
+
+	// xcpretty pipeline: wrapped xcodebuild stdout → xcpretty stdin, while we
+	// tee the raw output into `combined` for downstream log handling.
+	xcprettyCmd := exec.Command("xcpretty") //nolint:gosec
+	pr, pw := io.Pipe()
+	xcCmd.Stdout = io.MultiWriter(pw, &combined)
+	xcCmd.Stderr = io.MultiWriter(os.Stderr, &combined)
+	xcprettyCmd.Stdin = pr
+	xcprettyCmd.Stdout = os.Stdout
+	xcprettyCmd.Stderr = os.Stderr
+
+	if err := xcprettyCmd.Start(); err != nil {
+		_ = pw.Close()
+
+		return "", true, fmt.Errorf("start xcpretty: %w", err)
+	}
+
+	runErr := xcCmd.Run()
+	_ = pw.Close()
+	waitErr := xcprettyCmd.Wait()
+
+	if runErr != nil {
+		return combined.String(), true, runErr
+	}
+	if waitErr != nil {
+		return combined.String(), true, waitErr
+	}
+
+	return combined.String(), true, nil
+}
 
 const (
 	xcprettyFormatter   = "xcpretty"
@@ -146,7 +215,13 @@ func (s Step) run() {
 		testCommandModel.SetCustomOptions(options)
 	}
 
-	if cfgs.OutputTool == xcprettyFormatter {
+	if rawXcodebuildOutput, didRun, err := runXcodebuildWithRNWrap(testCommandModel.Command().GetCmd(), cfgs.OutputTool == xcprettyFormatter); didRun {
+		if err != nil {
+			log.Errorf("\nLast lines of the Xcode's build log:")
+			fmt.Println(stringutil.LastNLines(rawXcodebuildOutput, 10))
+			failf("Test failed, error: %s", err)
+		}
+	} else if cfgs.OutputTool == xcprettyFormatter {
 		xcprettyCmd := xcpretty.New(testCommandModel)
 
 		log.Infof("$ %s\n", xcprettyCmd.PrintableCmd())
