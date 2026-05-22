@@ -77,6 +77,8 @@ inputs:
   opts:
     is_required: true
     title: Should a clean Xcode build run before testing?
+    description: |-
+      Run a clean Xcode build (no incremental cache) before testing when set to `yes`.
     value_options:
     - "yes"
     - "no"
@@ -84,6 +86,8 @@ inputs:
   opts:
     is_required: true
     title: Generate code coverage files?
+    description: |-
+      Generate code coverage files alongside the test run when set to `yes`.
     value_options:
     - "yes"
     - "no"
@@ -134,9 +138,11 @@ inputs:
       You can leave it empty to don't change it.
     title: "[Deprecated] Working directory"
 outputs:
-- BITRISE_XCODE_TEST_RESULT: null
+- BITRISE_XCODE_TEST_RESULT:
   opts:
     title: Result of the tests. 'succeeded' or 'failed'.
+    description: |-
+      Result of the `xcodebuild test` run. Either `succeeded` or `failed`.
     value_options:
     - succeeded
     - failed

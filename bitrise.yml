@@ -6,6 +6,10 @@ workflows:
     steps:
     - git::https://github.com/bitrise-steplib/steps-check.git: { }
 
+  generate_readme:
+    steps:
+    - git::https://github.com/bitrise-steplib/steps-readme-generator.git@main: { }
+
   ci:
     steps:
     - git::https://github.com/bitrise-steplib/steps-check.git: { }

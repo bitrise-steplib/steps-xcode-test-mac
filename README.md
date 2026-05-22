@@ -1,91 +1,81 @@
-# Xcode Test step for Mac
+# Xcode Test for Mac
 
-The Xcode Test step for Mac.
+[![Step changelog](https://shields.io/github/v/release/bitrise-steplib/steps-xcode-test-mac?include_prereleases&label=changelog&color=blueviolet)](https://github.com/bitrise-steplib/steps-xcode-test-mac/releases)
 
-## How to use this Step
+Runs Xcode's `test` action for macOS app projects.
 
-Can be run directly with the [bitrise CLI](https://github.com/bitrise-io/bitrise),
-just `git clone` this repository, `cd` into it's folder in your Terminal/Command Line
-and call `bitrise run test`.
+<details>
+<summary>Description</summary>
 
-*Check the `bitrise.yml` file for required inputs which have to be
-added to your `.bitrise.secrets.yml` file!*
+This Step runs your pre-defined tests, and the **Deploy to Bitrise.io** Step deploys your test results to Bitrise.
+You don't have to upload code signing files for this.
+However, if you set a team for your project locally, in Xcode, then Xcode will ask for that team’s Developer certificate before running the test.
 
-Step by step:
+### Configuring the Step
+This Step has a default configuration that does not need to be modified, which means that if pre-defined tests are written correctly, they will work.
+Here is a rundown of the inputs should you wish to modify them.
+1. Add the path of your project in the **Project (or Workspace) path** input.
+2. Add the scheme name in the **Scheme name** input. Please note the scheme has to be marked as shared in Xcode.
+3. Add the device or simulator on which the app will run in the **Destination** input, for example, `platform=OS X,arch=x86_64`.
+4. Set the **Should a clean Xcode build run before testing?** input to `yes` to run a clean build without cache.
+5. Select `yes` in **Generate code coverage files?** input if you wish to get code coverage analysis of your tests.
+6. If you wish to use xcpretty formatter for your xcodebuild as an output tool, select `xcpretty` in the **Output tool** input.
+If this input is set to `xcodebuild`, the raw xcodebuild output gets printed.
+7. Add extra options to the end of the `xcodebuild` call in the **Additional options for xcodebuild call** input.
+Use multiple options separated by a space character, for example, `-xcconfig PATH -verboseAdditional`.
+9. Set the **Disable indexing during the build** input to `yes` to speed up your build.
 
-1. Open up your Terminal / Command Line
-2. `git clone` the repository
-3. `cd` into the directory of the step (the one you just `git clone`d)
-5. Create a `.bitrise.secrets.yml` file in the same directory of `bitrise.yml` - the `.bitrise.secrets.yml` is a git ignored file, you can store your secrets in
-6. Check the `bitrise.yml` file for any secret you should set in `.bitrise.secrets.yml`
-  * Best practice is to mark these options with something like `# define these in your .bitrise.secrets.yml`, in the `app:envs` section.
-7. Once you have all the required secret parameters in your `.bitrise.secrets.yml` you can just run this step with the [bitrise CLI](https://github.com/bitrise-io/bitrise): `bitrise run test`
+### Troubleshooting
 
-An example `.bitrise.secrets.yml` file:
+If your app does not have test targets defined, the primary workflow will be the only automatically created workflow and it will NOT include the **Xcode Test for Mac** Step.
 
-```
-envs:
-- A_SECRET_PARAM_ONE: the value for secret one
-- A_SECRET_PARAM_TWO: the value for secret two
-```
+### Useful links
+- [Getting started with MacOS apps](https://devcenter.bitrise.io/getting-started/getting-started-with-macos-apps/)
+- [About code signing](https://devcenter.bitrise.io/code-signing/code-signing-index/)
 
-## How to create your own step
+### Related Steps
+- [Xcode Archive for Mac](https://www.bitrise.io/integrations/steps/xcode-archive-mac)
+- [Deploy to iTunes Connect - Application Loader ](https://www.bitrise.io/integrations/steps/deploy-to-itunesconnect-application-loader)
+</details>
 
-1. Create a new git repository for your step (**don't fork** the *step template*, create a *new* repository)
-2. Copy the [step template](https://github.com/bitrise-steplib/step-template) files into your repository
-3. Fill the `step.sh` with your functionality
-4. Wire out your inputs to `step.yml` (`inputs` section)
-5. Fill out the other parts of the `step.yml` too
-6. Provide test values for the inputs in the `bitrise.yml`
-7. Run your step with `bitrise run test` - if it works, you're ready
+## 🧩 Get started
 
-__For Step development guidelines & best practices__ check this documentation: [https://github.com/bitrise-io/bitrise/blob/master/_docs/step-development-guideline.md](https://github.com/bitrise-io/bitrise/blob/master/_docs/step-development-guideline.md).
+Add this step directly to your workflow in the [Bitrise Workflow Editor](https://docs.bitrise.io/en/bitrise-ci/workflows-and-pipelines/steps/adding-steps-to-a-workflow.html).
 
-**NOTE:**
+You can also run this step directly with [Bitrise CLI](https://github.com/bitrise-io/bitrise).
 
-If you want to use your step in your project's `bitrise.yml`:
+## ⚙️ Configuration
 
-1. git push the step into it's repository
-2. reference it in your `bitrise.yml` with the `git::PUBLIC-GIT-CLONE-URL@BRANCH` step reference style:
+<details>
+<summary>Inputs</summary>
 
-```
-- git::https://github.com/user/my-step.git@branch:
-   title: My step
-   inputs:
-   - my_input_1: "my value 1"
-   - my_input_2: "my value 2"
-```
+| Key | Description | Flags | Default |
+| --- | --- | --- | --- |
+| `project_path` | A `.xcodeproj`, `.xcworkspace` or `Package.swift` path, relative to the Working directory (if specified).  | required | `$BITRISE_PROJECT_PATH` |
+| `scheme` | The Scheme to use. **IMPORTANT**: The Scheme have to be marked as __shared__ in Xcode!  | required | `$BITRISE_SCHEME` |
+| `destination` | The Destination to use.  Read more in [Xcodebuild Destination Cheatsheet](http://www.mokacoding.com/blog/xcodebuild-destination-options/).  Example value: `platform=OS X,arch=x86_64`  |  |  |
+| `is_clean_build` | Run a clean Xcode build (no incremental cache) before testing when set to `yes`. | required | `yes` |
+| `generate_code_coverage_files` | Generate code coverage files alongside the test run when set to `yes`. | required | `no` |
+| `output_tool` | If output_tool is set to xcpretty, the xcodebuild output will be prettified by xcpretty. If output_tool is set to xcodebuild, the raw xcodebuild output will be printed. | required | `xcpretty` |
+| `xcodebuild_options` | Options added to the end of the xcodebuild call.  You can use multiple options, separated by a space character. Example: `-xcconfig PATH -verbose` |  | `CODE_SIGNING_ALLOWED='NO'` |
+| `disable_index_while_building` | Could make the build faster by adding `COMPILER_INDEX_STORE_ENABLE=NO` flag to the `xcodebuild` command which will disable the indexing during the build.  Indexing is needed for  * Autocomplete * Ability to quickly jump to definition * Get class and method help by alt clicking.  Which are not needed in CI environment.  **Note:** In Xcode you can turn off the `Index-WhileBuilding` feature  by disabling the `Enable Index-WhileBuilding Functionality` in the `Build Settings`.<br/> In CI environment you can disable it by adding `COMPILER_INDEX_STORE_ENABLE=NO` flag to the `xcodebuild` command. |  | `yes` |
+| `workdir` | This input is __deprecated__, please __use change-workdir step__ instead. Working directory of the step. You can leave it empty to don't change it.  |  | `$BITRISE_SOURCE_DIR` |
+</details>
 
-You can find more examples of step reference styles
-in the [bitrise CLI repository](https://github.com/bitrise-io/bitrise/blob/master/_examples/tutorials/steps-and-workflows/bitrise.yml#L65).
+<details>
+<summary>Outputs</summary>
 
-## How to contribute to this Step
+| Environment Variable | Description |
+| --- | --- |
+| `BITRISE_XCODE_TEST_RESULT` | Result of the `xcodebuild test` run. Either `succeeded` or `failed`. |
+</details>
 
-1. Fork this repository
-2. `git clone` it
-3. Create a branch you'll work on
-4. To use/test the step just follow the **How to use this Step** section
-5. Do the changes you want to
-6. Run/test the step before sending your contribution
-  * You can also test the step in your `bitrise` project, either on your Mac or on [bitrise.io](https://www.bitrise.io)
-  * You just have to replace the step ID in your project's `bitrise.yml` with either a relative path, or with a git URL format
-  * (relative) path format: instead of `- original-step-id:` use `- path::./relative/path/of/script/on/your/Mac:`
-  * direct git URL format: instead of `- original-step-id:` use `- git::https://github.com/user/step.git@branch:`
-  * You can find more example of alternative step referencing at: https://github.com/bitrise-io/bitrise/blob/master/_examples/tutorials/steps-and-workflows/bitrise.yml
-7. Once you're done just commit your changes & create a Pull Request
+## 🙋 Contributing
 
+We welcome [pull requests](https://github.com/bitrise-steplib/steps-xcode-test-mac/pulls) and [issues](https://github.com/bitrise-steplib/steps-xcode-test-mac/issues) against this repository.
 
-## Share your own Step
+For pull requests, work on your changes in a forked repository and use the Bitrise CLI to [run step tests locally](https://docs.bitrise.io/en/bitrise-ci/bitrise-cli/running-your-first-local-build-with-the-cli.html).
 
-You can share your Step or step version with the [bitrise CLI](https://github.com/bitrise-io/bitrise). If you use the `bitrise.yml` included in this repository, all you have to do is:
+Learn more about developing steps:
 
-1. In your Terminal / Command Line `cd` into this directory (where the `bitrise.yml` of the step is located)
-1. Run: `bitrise run test` to test the step
-1. Run: `bitrise run audit-this-step` to audit the `step.yml`
-1. Check the `share-this-step` workflow in the `bitrise.yml`, and fill out the
-   `envs` if you haven't done so already (don't forget to bump the version number if this is an update
-   of your step!)
-1. Then run: `bitrise run share-this-step` to share the step (version) you specified in the `envs`
-1. Send the Pull Request, as described in the logs of `bitrise run share-this-step`
-
-That's all ;)
+- [Create your own step](https://docs.bitrise.io/en/bitrise-ci/workflows-and-pipelines/developing-your-own-bitrise-step/developing-a-new-step.html)
