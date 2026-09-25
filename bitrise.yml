@@ -62,6 +62,12 @@ workflows:
             echo "BITRISE_XCODE_TEST_RESULT: ${BITRISE_XCODE_TEST_RESULT}"
 
   # ----------------------------------------------------------------
+  # --- workflow to regenerate the README from step.yml
+  generate_readme:
+    steps:
+    - git::https://github.com/bitrise-steplib/steps-readme-generator.git@main: { }
+
+  # ----------------------------------------------------------------
   # --- workflow to Share this step into a Step Library
   audit-this-step:
     steps:

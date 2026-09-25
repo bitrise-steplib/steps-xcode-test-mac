@@ -77,6 +77,10 @@ inputs:
   opts:
     is_required: true
     title: Should a clean Xcode build run before testing?
+    summary: Runs `clean` before `test`, discarding earlier build products.
+    description: |-
+      Runs `clean` before `test`, so the test build starts from nothing. It makes the Step slower,
+      and is only needed when a stale build product would otherwise be reused.
     value_options:
     - "yes"
     - "no"
@@ -84,6 +88,10 @@ inputs:
   opts:
     is_required: true
     title: Generate code coverage files?
+    summary: Passes `GCC_GENERATE_TEST_COVERAGE_FILES=YES` and `GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES` to xcodebuild.
+    description: |-
+      Tells xcodebuild to produce coverage data by setting `GCC_GENERATE_TEST_COVERAGE_FILES=YES`
+      and `GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES`.
     value_options:
     - "yes"
     - "no"
@@ -137,6 +145,10 @@ outputs:
 - BITRISE_XCODE_TEST_RESULT: null
   opts:
     title: Result of the tests. 'succeeded' or 'failed'.
+    summary: Whether the test run passed.
+    description: |-
+      Whether the test run passed: `succeeded` or `failed`. It is exported even when the Step fails,
+      so a later Step can branch on it.
     value_options:
     - succeeded
     - failed
