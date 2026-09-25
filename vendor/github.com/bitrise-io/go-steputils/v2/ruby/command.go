@@ -1,11 +1,11 @@
 package ruby
 
 import (
-	"errors"
 	"strings"
 
 	"github.com/bitrise-io/go-utils/v2/command"
 	"github.com/bitrise-io/go-utils/v2/env"
+	"github.com/bitrise-io/go-utils/v2/log"
 )
 
 // CommandFactory ...
@@ -22,11 +22,22 @@ type commandFactory struct {
 	installType InstallType
 }
 
-// NewCommandFactory ...
-func NewCommandFactory(cmdFactory command.Factory, cmdLocator env.CommandLocator) (CommandFactory, error) {
-	installType := rubyInstallType(cmdLocator)
+// NewCommandFactory creates a command factory for the ruby installation found in the PATH.
+//
+// It returns a nil CommandFactory and an error wrapping ErrRubyNotFound if there is no ruby
+// executable in the PATH.
+//
+// If ruby is installed but its version manager is not recognised, it logs a warning and returns a
+// usable factory: commands are created without version manager specific handling (no sudo, no
+// rbenv rehash and no asdf reshim).
+func NewCommandFactory(cmdFactory command.Factory, cmdLocator env.CommandLocator, logger log.Logger) (CommandFactory, error) {
+	installType, err := rubyInstallType(cmdLocator)
+	if err != nil {
+		return nil, err
+	}
+
 	if installType == Unknown {
-		return nil, errors.New("unknown Ruby installation")
+		logger.Warnf("Unknown Ruby installation type, running Ruby commands without version manager specific handling.")
 	}
 
 	return commandFactory{
@@ -35,6 +46,7 @@ func NewCommandFactory(cmdFactory command.Factory, cmdLocator env.CommandLocator
 	}, nil
 }
 
+// Create ...
 func (f commandFactory) Create(name string, args []string, opts *command.Opts) command.Command {
 	s := append([]string{name}, args...)
 	if sudoNeeded(f.installType, s...) {
@@ -64,6 +76,9 @@ func (f commandFactory) CreateGemInstall(gem, version string, enablePrerelease, 
 	if f.installType == RbenvRuby {
 		cmd := f.Create("rbenv", []string{"rehash"}, nil)
 		cmds = append(cmds, cmd)
+	} else if f.installType == ASDFRuby {
+		cmd := f.Create("asdf", []string{"reshim", "ruby"}, nil)
+		cmds = append(cmds, cmd)
 	}
 
 	return cmds
@@ -76,6 +91,9 @@ func (f commandFactory) CreateGemUpdate(gem string, opts *command.Opts) []comman
 
 	if f.installType == RbenvRuby {
 		cmd := f.Create("rbenv", []string{"rehash"}, nil)
+		cmds = append(cmds, cmd)
+	} else if f.installType == ASDFRuby {
+		cmd := f.Create("asdf", []string{"reshim", "ruby"}, nil)
 		cmds = append(cmds, cmd)
 	}
 
